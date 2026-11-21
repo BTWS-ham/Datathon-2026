@@ -103,7 +103,7 @@ def prepare_missing_inputs(spark, out="workspace.datathon", max_rows=200000):
         if len(clean) != len(raw):
             raise ValueError("Upstream cleaner changed row count")
         records, schema = facility_records(clean)
-        spark.createDataFrame(records, schema).write.format("delta").mode("errorifexists").saveAsTable(facility_table)
+        spark.createDataFrame(records, schema).write.format("delta").mode("error").saveAsTable(facility_table)
         created.append(facility_table)
     if not spark.catalog.tableExists(evidence_table):
         clean_rows = spark.table(facility_table).limit(max_rows + 1).collect()
@@ -114,7 +114,7 @@ def prepare_missing_inputs(spark, out="workspace.datathon", max_rows=200000):
             "unique_id string, service string, evidence_level string, evidence_score double, "
             "quotes array<struct<field:string,sentence:string>>, n_direct int, n_supporting int"
         )
-        spark.createDataFrame(records, schema).write.format("delta").mode("errorifexists").saveAsTable(evidence_table)
+        spark.createDataFrame(records, schema).write.format("delta").mode("error").saveAsTable(evidence_table)
         created.append(evidence_table)
     return {
         "created": created,
