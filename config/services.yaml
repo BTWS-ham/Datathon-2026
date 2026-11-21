@@ -39,7 +39,7 @@ services:
     specialties: [radiology, interventionalRadiology]
     red_flags: [CT scanner down, CT scanner offline]
   mri:
-    direct: [MRI, MRI scan, MRI scans, MRI scanning, MRI imaging, magnetic resonance imaging]
+    direct: [MRI, MRI scan, MRI scans, MRI scanning, MRI imaging, magnetic resonance imaging, MRCP]
     supporting: [MRI machine, MRI machines, MRI scanner, MRI scanners, MRI system, MRI systems]
     specialties: [radiology, interventionalRadiology]
     red_flags: [MRI scanner down, MRI scanner offline]
@@ -73,7 +73,7 @@ services:
   cardiac_surgery:
     # Bare "bypass" is avoided: "Gastric Bypass" (bariatric) and "Aorto femoral bypass" (vascular).
     direct: [cardiac surgery, heart surgery, open heart surgery, cardiothoracic surgery, cardio-thoracic surgery,
-             CABG, coronary artery bypass, coronary bypass, heart bypass, valve replacement]
+             CABG, coronary artery bypass, coronary bypass, heart bypass, valve replacement, valve surgery]
     supporting: [heart-lung machine, heart lung machine]
     specialties: [cardiacSurgery]
     red_flags: []
