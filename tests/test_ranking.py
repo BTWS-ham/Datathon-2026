@@ -175,5 +175,51 @@ class RankingTests(unittest.TestCase):
         self.assertEqual(item["confidence"], "low")
 
 
+class CurrentProducerTests(unittest.TestCase):
+    def setUp(self):
+        path = SAMPLE.with_name("04_ranking_current_sample.json")
+        self.data = json.loads(path.read_text())
+
+    def query(self):
+        return Ranker(self.data["facilities"], self.data["evidence"]).recommend(
+            "hemodialysis", 25.5941, 85.1376
+        )
+
+    def test_current_schema_and_sentence_quotes(self):
+        result = self.query()
+        self.assertEqual(result["status"], "no_nearby_strong_evidence")
+        strong = result["nearest_strong_option"]
+        self.assertEqual(strong["score_breakdown"]["location_weight"], 0.9)
+        self.assertEqual(strong["location_confidence"], "high")
+        self.assertEqual(strong["quotes"][0]["text"], "Hemodialysis treatment is provided.")
+        self.assertNotIn("unavailable for text", " ".join(strong["data_warnings"]))
+
+    def test_corrupted_rows_never_recommended(self):
+        self.data["facilities"][1]["flag_row_corrupted"] = True
+        result = self.query()
+        self.assertIsNone(result["nearest_strong_option"])
+        self.assertEqual(result["excluded_rows"]["corrupted_facility"], 1)
+
+    def test_upstream_low_location_trust_reduces_score(self):
+        high = self.query()["nearest_strong_option"]
+        self.data["facilities"][1]["location_confidence"] = "low"
+        self.data["facilities"][1]["flag_coords_far_from_city"] = True
+        self.data["facilities"][1]["quality_notes"] = "Coordinates >150 km from other facilities in the same city"
+        low = self.query()["nearest_strong_option"]
+        self.assertAlmostEqual(low["score"], high["score"] / 3)
+        self.assertEqual(low["confidence"], "low")
+        self.assertIn("flag_coords_far_from_city", low["data_warnings"])
+        self.assertIn("Coordinates >150 km", " ".join(low["data_warnings"]))
+
+    def test_unknown_corruption_status_is_excluded(self):
+        self.data["facilities"][1]["flag_row_corrupted"] = None
+        self.assertEqual(self.query()["excluded_rows"]["unknown_corruption_status"], 1)
+
+    def test_current_missing_field_is_not_guessed(self):
+        self.data["facilities"][0].pop("location_confidence")
+        with self.assertRaisesRegex(ValueError, "location_confidence"):
+            self.query()
+
+
 if __name__ == "__main__":
     unittest.main()

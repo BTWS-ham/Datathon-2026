@@ -1,37 +1,37 @@
 [
   {
     "location": "Patna",
-    "service": "dialysis",
+    "service": "hemodialysis",
     "latitude": 25.5941,
     "longitude": 85.1376
   },
   {
     "location": "Bihar rural test point",
-    "service": "dialysis",
+    "service": "hemodialysis",
     "latitude": 25.9,
     "longitude": 86.7
   },
   {
     "location": "Lucknow",
-    "service": "emergency_c_section",
+    "service": "ct_scan",
     "latitude": 26.8467,
     "longitude": 80.9462
   },
   {
     "location": "Maharashtra rural test point",
-    "service": "emergency_c_section",
+    "service": "ct_scan",
     "latitude": 19.5,
     "longitude": 76.5
   },
   {
     "location": "Delhi",
-    "service": "nicu",
+    "service": "mri",
     "latitude": 28.6139,
     "longitude": 77.209
   },
   {
     "location": "Mumbai",
-    "service": "cardiac_surgery",
+    "service": "ct_scan",
     "latitude": 19.076,
     "longitude": 72.8777
   },
@@ -49,13 +49,13 @@
   },
   {
     "location": "Nagpur",
-    "service": "trauma",
+    "service": "hemodialysis",
     "latitude": 21.1458,
     "longitude": 79.0882
   },
   {
     "location": "Odisha rural test point",
-    "service": "burn_care",
+    "service": "hemodialysis",
     "latitude": 19.9,
     "longitude": 83.0
   }

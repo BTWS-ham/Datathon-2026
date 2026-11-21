@@ -1,0 +1,118 @@
+{
+  "notice": "Entirely synthetic records for software testing, not real facilities or referrals.",
+  "facilities": [
+    {
+      "unique_id": "sample-weak",
+      "name": "Synthetic nearby weak facility",
+      "city_clean": "Synthetic test point",
+      "state_clean": "Synthetic",
+      "latitude": 25.6,
+      "longitude": 85.14,
+      "location_confidence": "high",
+      "flag_row_corrupted": false,
+      "flag_coords_missing": false,
+      "flag_coords_outside_india": false,
+      "flag_coords_far_from_city": false,
+      "flag_pin_state_mismatch": false,
+      "flag_possible_duplicate": false,
+      "quality_notes": "",
+      "procedure_list": [
+        "Hemodialysis treatment is provided."
+      ],
+      "specialties_list": [
+        "Nephrology"
+      ],
+      "source_urls": []
+    },
+    {
+      "unique_id": "sample-strong",
+      "name": "Synthetic distant strong facility",
+      "city_clean": "Synthetic test point",
+      "state_clean": "Synthetic",
+      "latitude": 26.4,
+      "longitude": 85.2,
+      "location_confidence": "high",
+      "flag_row_corrupted": false,
+      "flag_coords_missing": false,
+      "flag_coords_outside_india": false,
+      "flag_coords_far_from_city": false,
+      "flag_pin_state_mismatch": false,
+      "flag_possible_duplicate": false,
+      "quality_notes": "",
+      "procedure_list": [
+        "Hemodialysis treatment is provided."
+      ],
+      "specialties_list": [
+        "Nephrology"
+      ],
+      "source_urls": []
+    },
+    {
+      "unique_id": "sample-invalid",
+      "name": "Synthetic bad-coordinate facility",
+      "city_clean": "Synthetic test point",
+      "state_clean": "Synthetic",
+      "latitude": -81.7,
+      "longitude": 85.14,
+      "location_confidence": "low",
+      "flag_row_corrupted": false,
+      "flag_coords_missing": false,
+      "flag_coords_outside_india": true,
+      "flag_coords_far_from_city": false,
+      "flag_pin_state_mismatch": false,
+      "flag_possible_duplicate": false,
+      "quality_notes": "",
+      "procedure_list": [
+        "Hemodialysis treatment is provided."
+      ],
+      "specialties_list": [
+        "Nephrology"
+      ],
+      "source_urls": []
+    }
+  ],
+  "evidence": [
+    {
+      "unique_id": "sample-weak",
+      "service": "hemodialysis",
+      "evidence_level": "weak",
+      "evidence_score": 0.35,
+      "n_direct": 0,
+      "n_supporting": 1,
+      "quotes": [
+        {
+          "field": "specialties",
+          "sentence": "Nephrology"
+        }
+      ]
+    },
+    {
+      "unique_id": "sample-strong",
+      "service": "hemodialysis",
+      "evidence_level": "strong",
+      "evidence_score": 0.9,
+      "n_direct": 1,
+      "n_supporting": 0,
+      "quotes": [
+        {
+          "field": "procedure",
+          "sentence": "Hemodialysis treatment is provided."
+        }
+      ]
+    },
+    {
+      "unique_id": "sample-invalid",
+      "service": "hemodialysis",
+      "evidence_level": "strong",
+      "evidence_score": 0.99,
+      "n_direct": 1,
+      "n_supporting": 0,
+      "quotes": [
+        {
+          "field": "procedure",
+          "sentence": "Hemodialysis treatment is provided."
+        }
+      ]
+    }
+  ]
+}
