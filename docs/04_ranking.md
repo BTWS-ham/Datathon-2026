@@ -14,7 +14,19 @@ The original ranking commit used the legacy contract. The updated implementation
 uses the current clean table by default, while retaining an explicit legacy
 schema adapter. It never imports or reruns the cleaner or evidence notebook.
 
-## Merge readiness: upstream blocker remains
+## Upstream mismatch and the Part C preparation bridge
+
+`04_prepare_inputs.ipynb` now creates missing agreed input tables by calling
+`prepare_ranking_inputs.py`. The helper reuses the pinned pure cleaning/scoring
+snapshots in `integration/` and aliases current `*_list` fields in memory. It
+never overwrites existing tables. This lets the ranking validation proceed
+without changing teammate branches or requiring their notebooks to be merged.
+The original upstream notebook still needs the correction described below.
+
+The snapshots preserve the reviewed source logic verbatim, with commit headers;
+the JSON rule snapshot is an exact conversion of B's YAML configuration. Replace
+the bridge with the agreed upstream pipeline when the team integrates it. Do
+not silently update a pinned rule snapshot or overwrite a teammate's tables.
 
 The current evidence notebook prefers `facilities_clean`, then requires raw
 `procedure`, `equipment`, `capability` columns. The current cleaner's
@@ -41,8 +53,9 @@ B must regenerate evidence from the same cleaning snapshot used by ranking.
 Old evidence may quote text discarded by the new cleaner and will be excluded
 when the literal source text no longer matches.
 
-**Do not call the whole pipeline ready until the producer fix, real-data checks
-and App integration are complete.** Local Git mergeability does not prove that.
+**Do not call ranking ready until real-data checks pass against the prepared
+tables.** The wider App and B's original pipeline require their own integration
+checks. Local Git mergeability does not prove runtime readiness.
 
 ## Confirmed B output contract
 
@@ -74,7 +87,8 @@ configure(load_from_spark(spark))
 result = recommend("hemodialysis", 25.5941, 85.1376, k=5)
 ```
 
-Enable `RUN_LIVE = True` only after the upstream producer fix and schema checks.
+Run `04_prepare_inputs` if the tables do not yet exist, then enable `RUN_LIVE = True`
+after the schema checks. Existing tables are reused, never rebuilt automatically.
 Reload with `configure(load_from_spark(spark))` after table refreshes. For a
 reviewed legacy table, explicitly pass its table name as `facility_table`;
 there is no silent table fallback. The reader never mutates tables. It collects
@@ -130,7 +144,7 @@ lower-evidence section. Dataset absence is not a demonstrated real-world care ga
 
 ## Verification completed locally
 
-`python3 -m unittest discover -s tests -v`: **27 tests passed**. Updated default
+`python3 -m unittest discover -s tests -v`: **31 tests passed**. Updated default
 notebook code cells execute without Spark, with live mode disabled. Coverage
 includes current and legacy schema adapters, location label weights, corruption
 exclusion, preserved B sentence quotes, source grounding, k=1 fallback, urgent
@@ -144,8 +158,10 @@ and does not establish that the notebook-to-table pipeline runs.
 
 ## Mandatory Databricks checks — actual results PENDING
 
-No Databricks table access or App session is available in this local repository.
-Do not treat local software tests as real-data or clinical validation.
+Do not treat local software tests as real-data or clinical validation. The first
+live workspace inspection found no `workspace.datathon` schema and no tables in
+`workspace.default`; the three shared source tables were accessible. Preparation
+and live query results are tracked separately from that initial inspection.
 
 1. Confirm tables/schema and evidence regeneration after B's input fix:
 
