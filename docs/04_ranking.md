@@ -2,7 +2,8 @@
 
 ## Inspected branch snapshots
 
-Read independently of `milly/part`; no teammate branch was merged or modified.
+Inspected independently before merging current `main` into `milly/part` on
+2026-11-21. No teammate branch or `main` was modified by Part C.
 
 | Snapshot | Observed interface |
 | --- | --- |
@@ -10,11 +11,15 @@ Read independently of `milly/part`; no teammate branch was merged or modified.
 | `service` at `6b4104bef87409e4fc000cc69a7e0e7905f7134b` | `03_service_evidence.ipynb` writes `workspace.datathon.facility_service_evidence`. `config/services.yaml` currently defines `hemodialysis`, `ct_scan`, `mri`. |
 | `ann/data` at `ff123e8f45f31009f55195502b29de892228a1e3` | Legacy `ann_facilities_clean_v1` with `facility_id`, `name_clean`, `*_items`, coordinate/duplicate flags. No location-confidence output. |
 
+Current `main` at `3e0725a` includes B's merged service notebook. It quotes
+`procedure_list`, `equipment_list`, `capability_list`, `description`, and
+`specialties_list` directly. The ranker verifies those fields against the clean row.
+
 The original ranking commit used the legacy contract. The updated implementation
 uses the current clean table by default, while retaining an explicit legacy
 schema adapter. It never imports or reruns the cleaner or evidence notebook.
 
-## Upstream mismatch and the Part C preparation bridge
+## Part C preparation bridge and merged producer
 
 `04_prepare_inputs.ipynb` now creates missing agreed input tables by calling
 `prepare_ranking_inputs.py`. The helper reuses the pinned pure cleaning/scoring
@@ -28,30 +33,13 @@ the JSON rule snapshot is an exact conversion of B's YAML configuration. Replace
 the bridge with the agreed upstream pipeline when the team integrates it. Do
 not silently update a pinned rule snapshot or overwrite a teammate's tables.
 
-The current evidence notebook prefers `facilities_clean`, then requires raw
-`procedure`, `equipment`, `capability` columns. The current cleaner's
-`OUTPUT_COLUMNS` removes those raw columns and outputs `procedure_list`,
-`equipment_list`, `capability_list` instead. Consequently B's cell 5 raises
-`ValueError: Expected procedure, equipment and capability in the facilities input.`
-when it reads the new clean table. The configured fallback is not attempted
-once the preferred table exists.
-
-This is an upstream producer mismatch, not a ranking exception to suppress.
-No changes were made to B's file or branch. B can adapt its local DataFrame
-immediately after `clean = spark.table(source)`, before checking/scoring fields:
-
-```python
-# Suggested change for the service owner, not applied to their branch here.
-for field in ["procedure", "equipment", "capability", "specialties"]:
-    if field not in clean.columns and f"{field}_list" in clean.columns:
-        clean = clean.withColumn(field, F.col(f"{field}_list"))
-```
-
-The scorer already accepts lists via its JSON struct serialization. This aliases
-columns in memory and need not rewrite the clean table. After fixing the input,
-B must regenerate evidence from the same cleaning snapshot used by ranking.
-Old evidence may quote text discarded by the new cleaner and will be excluded
-when the literal source text no longer matches.
+The pinned service snapshot in `integration/upstream_service.py` maps list
+columns back to legacy quote names. B's merged notebook reads list columns
+directly and emits their names in `quotes`. The ranker now accepts and verifies
+either form. The existing evidence table was initially created by the Part C
+bridge from a pinned B snapshot. Running B's merged notebook will overwrite
+it with the official producer output; ranking never silently overwrites it.
+The service vocabulary and YAML rules are unchanged from that snapshot.
 
 **Do not call ranking ready until real-data checks pass against the prepared
 tables.** The wider App and B's original pipeline require their own integration

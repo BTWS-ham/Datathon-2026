@@ -194,6 +194,14 @@ class CurrentProducerTests(unittest.TestCase):
         self.assertEqual(strong["quotes"][0]["text"], "Hemodialysis treatment is provided.")
         self.assertNotIn("unavailable for text", " ".join(strong["data_warnings"]))
 
+    def test_merged_service_notebook_uses_list_quote_fields(self):
+        self.data["evidence"][1]["quotes"][0]["field"] = "procedure_list"
+        result = self.query()
+        strong = result["nearest_strong_option"]
+        self.assertIsNotNone(strong)
+        self.assertEqual(strong["quotes"][0]["field"], "procedure_list")
+        self.assertNotIn("unavailable for text", " ".join(strong["data_warnings"]))
+
     def test_corrupted_rows_never_recommended(self):
         self.data["facilities"][1]["flag_row_corrupted"] = True
         result = self.query()

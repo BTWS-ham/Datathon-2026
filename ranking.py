@@ -30,7 +30,10 @@ CURRENT_REQUIRED = {
     "flag_pin_state_mismatch", "flag_possible_duplicate", "quality_notes",
 }
 LOCATION_WEIGHTS = {"high": 0.90, "medium": 0.60, "low": 0.30}
-SOURCE_FIELDS = {"description", "procedure", "equipment", "capability", "specialties", "specialty"}
+SOURCE_FIELDS = {
+    "description", "procedure", "equipment", "capability", "specialties", "specialty",
+    "procedure_list", "equipment_list", "capability_list", "specialties_list",
+}
 URGENT_SERVICES = {"emergency_c_section", "nicu", "trauma", "burn_care", "emergency", "icu"}
 LEVELS = {"strong", "moderate", "weak"}
 
@@ -124,9 +127,9 @@ def _quotes(value):
 
 def _source_text(facility, field):
     value = facility.get(field)
-    if value is None:
+    if value is None and not field.endswith("_list"):
         value = facility.get(f"{field}_items")
-    if value is None:
+    if value is None and not field.endswith("_list"):
         value = facility.get(f"{field}_list")
     value = _decode(value)
     if isinstance(value, list):
@@ -268,7 +271,7 @@ class Ranker:
             if source_missing:
                 warnings.append("Some quoted source fields were unavailable for text verification.")
             if level == "strong" and (
-                direct < 1 or all(quote["field"] in {"specialties", "specialty"} for quote in quotes)
+                direct < 1 or all(quote["field"] in {"specialties", "specialty", "specialties_list"} for quote in quotes)
             ):
                 level = "weak"
                 warnings.append("Strong label downgraded: direct service-text evidence is missing.")
