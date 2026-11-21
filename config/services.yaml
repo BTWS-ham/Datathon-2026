@@ -1,5 +1,7 @@
-# Starter vocabulary. Confirm service IDs with the ranking and app owners.
-# Terms are literals. Longer equipment phrases take precedence over their substrings.
+# Service vocabulary v2. Terms chosen from the most frequent real phrasings in
+# facilities_clean (procedure/capability/equipment lists), queried 2026-11-21.
+# Matching: case-insensitive, whole words, no plural/stemming -> list variants.
+# direct -> strong, supporting -> moderate, specialties (exact camelCase tags) -> weak.
 red_flags:
   - "no"
   - "not"
@@ -25,18 +27,60 @@ red_flags:
   - "off-site"
   - "offsite"
 services:
-  hemodialysis:
-    direct: [hemodialysis, haemodialysis, maintenance hemodialysis, maintenance haemodialysis]
-    supporting: [dialysis machine, dialysis machines, hemodialysis machine, hemodialysis machines, haemodialysis machine, haemodialysis machines]
+  dialysis:
+    direct: [dialysis, hemodialysis, haemodialysis, CAPD]
+    supporting: [dialysis machine, dialysis machines, dialysis equipment,
+                 hemodialysis machine, hemodialysis machines, haemodialysis machine, haemodialysis machines]
     specialties: [nephrology]
-    red_flags: [peritoneal dialysis only, dialysis unit closed]
+    red_flags: [dialysis unit closed]
   ct_scan:
-    direct: [CT scan, CT scans, CT scanning, computed tomography]
+    direct: [CT, CT scan, CT scans, CT scanning, CT imaging, computed tomography, CT angiography, CT angiogram]
     supporting: [CT scanner, CT scanners, computed tomography scanner, computed tomography scanners]
-    specialties: [radiology]
+    specialties: [radiology, interventionalRadiology]
     red_flags: [CT scanner down, CT scanner offline]
   mri:
-    direct: [MRI, MRI scan, MRI scans, magnetic resonance imaging]
-    supporting: [MRI machine, MRI machines, MRI scanner, MRI scanners, magnetic resonance imaging scanner]
-    specialties: [radiology]
+    direct: [MRI, MRI scan, MRI scans, MRI scanning, MRI imaging, magnetic resonance imaging]
+    supporting: [MRI machine, MRI machines, MRI scanner, MRI scanners, MRI system, MRI systems]
+    specialties: [radiology, interventionalRadiology]
     red_flags: [MRI scanner down, MRI scanner offline]
+  c_section:
+    # No listing says "emergency": the data cannot separate emergency from planned C-sections.
+    direct: [caesarean, cesarean, c-section, c-sections, c section, c sections, LSCS]
+    supporting: []
+    specialties: [gynecologyAndObstetrics, obstetricsAndMaternityCare, maternalFetalMedicineOrPerinatology]
+    red_flags: []
+  nicu:
+    # "Neonatal care" / "Newborn care" / "Newborn jaundice" are NOT intensive care.
+    direct: [NICU, neonatal intensive care, neonatal ICU, newborn intensive care, SNCU, special newborn care unit]
+    supporting: [neonatal ventilator, neonatal ventilators, infant incubator, infant incubators,
+                 advanced neonatal care, advanced newborn care]
+    specialties: [neonatologyPerinatalMedicine]
+    red_flags: []
+  icu:
+    direct: [ICU, intensive care unit, intensive care units, critical care, critical care unit,
+             MICU, SICU, medical ICU, surgical ICU]
+    supporting: [ventilator, ventilators]
+    specialties: [criticalCareMedicine, pediatricCriticalCareMedicine]
+    red_flags: []
+  emergency_trauma:
+    # "Emergency dental care" does not match "emergency care" (words must be adjacent).
+    direct: [emergency care, emergency services, emergency service, emergency department, emergency room,
+             casualty, trauma care, trauma center, trauma centre, trauma surgery, trauma unit, polytrauma,
+             accident and emergency]
+    supporting: []
+    specialties: [emergencyMedicine]
+    red_flags: []
+  cardiac_surgery:
+    # Bare "bypass" is avoided: "Gastric Bypass" (bariatric) and "Aorto femoral bypass" (vascular).
+    direct: [cardiac surgery, heart surgery, open heart surgery, cardiothoracic surgery, cardio-thoracic surgery,
+             CABG, coronary artery bypass, coronary bypass, heart bypass, valve replacement]
+    supporting: [heart-lung machine, heart lung machine]
+    specialties: [cardiacSurgery]
+    red_flags: []
+  burn_care:
+    # "Sunburn" / "Sun Burn Treatment" / "Fat burner" are cosmetology, not burn care.
+    direct: [burn unit, burns unit, burn ward, burns ward, burn care, burns care, burn ICU, burns ICU,
+             burn treatment, burns treatment, burn management, burns management, burn surgery, burns surgery]
+    supporting: [burns operation theatre, burn operation theatre]
+    specialties: []
+    red_flags: [sun burn]
