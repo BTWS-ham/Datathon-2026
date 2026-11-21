@@ -196,8 +196,12 @@ LEFT ANTI JOIN workspace.datathon.facilities_clean f
 ON TRIM(e.unique_id) = TRIM(f.unique_id);
 ```
 
-Expected: no duplicate usable IDs/keys, unmatched evidence ideally zero. If not,
-investigate instead of guessing a duplicate winner. Ranking normalizes service
+Observed in the first live load: at least one duplicated facility ID. The Spark
+loader excludes **all** rows with an ambiguous ID; it does not choose a winner.
+The excluded ID and its evidence cannot appear in recommendations. The response
+reports the exclusion counts in `input_diagnostics`. Keep the SQL result for
+upstream cleanup. Duplicate facility-service keys still fail rather than silently
+selecting one. Unmatched evidence should be investigated. Ranking normalizes service
 spaces/hyphens to underscores, so check normalized keys too if vocabulary changes.
 
 3. Enable live mode and run the 10 queries in `examples/04_ranking_queries.json`.

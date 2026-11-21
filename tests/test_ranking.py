@@ -3,7 +3,7 @@ import json
 from pathlib import Path
 import unittest
 
-from ranking import Ranker, configure, distance_km, recommend
+from ranking import Ranker, configure, distance_km, load_from_spark, recommend
 
 
 SAMPLE = Path(__file__).resolve().parents[1] / "examples/04_ranking_sample.json"
@@ -219,6 +219,39 @@ class CurrentProducerTests(unittest.TestCase):
         self.data["facilities"][0].pop("location_confidence")
         with self.assertRaisesRegex(ValueError, "location_confidence"):
             self.query()
+
+    def test_spark_loader_excludes_every_ambiguous_id(self):
+        facilities = copy.deepcopy(self.data["facilities"])
+        duplicate = copy.deepcopy(facilities[1])
+        duplicate["name"] = "Conflicting facility name"
+        facilities.append(duplicate)
+        evidence = copy.deepcopy(self.data["evidence"])
+
+        class Frame:
+            def __init__(self, rows):
+                self.rows = rows
+                self.columns = list(rows[0])
+
+            def select(self, *columns):
+                return Frame([{key: row.get(key) for key in columns} for row in self.rows])
+
+            def limit(self, maximum):
+                return Frame(self.rows[:maximum])
+
+            def collect(self):
+                return self.rows
+
+        class Spark:
+            def table(self, name):
+                return Frame(facilities if name.endswith("facilities_clean") else evidence)
+
+        ranker = load_from_spark(Spark())
+        self.assertNotIn(duplicate["unique_id"], ranker.facilities)
+        self.assertEqual(ranker.input_diagnostics["ambiguous_facility_ids_excluded"], 1)
+        self.assertEqual(ranker.input_diagnostics["facility_rows_excluded_for_ambiguous_ids"], 2)
+        result = ranker.recommend("hemodialysis", 25.5941, 85.1376)
+        self.assertIsNone(result["nearest_strong_option"])
+        self.assertEqual(result["excluded_rows"]["missing_facility_match"], 1)
 
 
 if __name__ == "__main__":

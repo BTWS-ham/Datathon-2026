@@ -137,6 +137,7 @@ def _source_text(facility, field):
 class Ranker:
     def __init__(self, facilities, evidence):
         self.facilities = {}
+        self.input_diagnostics = {}
         for raw in facilities:
             row = _adapt_facility(_dict(raw))
             for key in FACILITY_REQUIRED:
@@ -362,6 +363,7 @@ class Ranker:
             "nearby_strong_count": len(strong_nearby),
             "eligible_candidate_count": len(candidates),
             "excluded_rows": dict(excluded),
+            "input_diagnostics": self.input_diagnostics,
         }
 
 
@@ -382,7 +384,20 @@ def load_from_spark(spark, facility_table=FACILITY_TABLE, evidence_table=EVIDENC
     erows = evidence.select(*sorted(EVIDENCE_REQUIRED)).limit(max_rows + 1).collect()
     if len(frows) > max_rows or len(erows) > max_rows:
         raise ValueError("Prototype row limit exceeded; do not silently truncate ranking input")
-    return Ranker(frows, erows)
+    # An upstream ID collision cannot be resolved safely by choosing one row.
+    # Exclude every facility bearing that ID, including its service evidence.
+    counts = Counter(_id(_dict(row).get("facility_id", _dict(row).get("unique_id"))) for row in frows)
+    ambiguous_ids = {uid for uid, count in counts.items() if uid and count > 1}
+    unambiguous = [
+        row for row in frows
+        if _id(_dict(row).get("facility_id", _dict(row).get("unique_id"))) not in ambiguous_ids
+    ]
+    ranker = Ranker(unambiguous, erows)
+    ranker.input_diagnostics = {
+        "ambiguous_facility_ids_excluded": len(ambiguous_ids),
+        "facility_rows_excluded_for_ambiguous_ids": sum(counts[uid] for uid in ambiguous_ids),
+    }
+    return ranker
 
 
 _ranker = None
