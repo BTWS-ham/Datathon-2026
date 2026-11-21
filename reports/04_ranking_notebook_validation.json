@@ -1,0 +1,29 @@
+{
+  "status": "passed_notebook_checks",
+  "observed_at_utc": "2026-11-21T22:24:10Z",
+  "code_commit": "558833087e9b97153174af1b4dcbfb92a5c2cd53",
+  "workspace_notebook": "/Workspace/Users/weimings@andrew.cmu.edu/Datathon-2026/04_ranking",
+  "compute": "Serverless Python",
+  "run_result": "Finished running 4 cells: 4 succeeded",
+  "live_mode": true,
+  "loaded_facility_table": "workspace.datathon.facilities_clean",
+  "loaded_evidence_table": "workspace.datathon.facility_service_evidence",
+  "snapshot_load_seconds": 24.39,
+  "canonical_services_observed": ["ct_scan", "hemodialysis", "mri"],
+  "query_count_in_successful_final_cell": 10,
+  "assertions_in_final_cell": [
+    "known service and at least one usable candidate",
+    "nearby radius",
+    "unique recommendation IDs",
+    "descending score order",
+    "score equals product of factors",
+    "nonempty evidence quotes"
+  ],
+  "output_capture": "Databricks displayed the query JSON but truncated the full output. This report records the observed cell status and assertions, not a complete export of recommendations.",
+  "evidence_provenance": "The existing evidence table was initially created by the Part C bridge from a pinned B scorer snapshot. The merged B notebook's replacement output has not been independently confirmed in this run.",
+  "remaining_checks": [
+    "review representative facility text and location against sources",
+    "confirm B's independent 50-record accuracy review",
+    "test D's app integration"
+  ]
+}

@@ -144,12 +144,18 @@ ranking: two eligible candidates and one bad-coordinate exclusion, as expected.
 This exercises the record adapters; it bypasses B's broken Spark input selection
 and does not establish that the notebook-to-table pipeline runs.
 
-## Mandatory Databricks checks — actual results PENDING
+## Databricks validation status
 
-Do not treat local software tests as real-data or clinical validation. The first
-live workspace inspection found no `workspace.datathon` schema and no tables in
-`workspace.default`; the three shared source tables were accessible. Preparation
-and live query results are tracked separately from that initial inspection.
+The first live attempt failed on duplicate facility IDs and is preserved in
+`reports/04_ranking_live_validation.json`. After excluding all rows bearing an
+ambiguous ID, the refreshed `04_ranking` notebook ran on Python Serverless with
+`RUN_LIVE = True`: four code cells succeeded, including the final cell's 10 real
+queries and assertions. It loaded hemodialysis, CT scan and MRI evidence in
+24.39 seconds. See `reports/04_ranking_notebook_validation.json` for the exact
+observations and limits. The Databricks UI truncated the full query JSON, so
+the compact report records the successful assertions rather than inventing a
+complete recommendation export. This is software validation, not clinical
+source verification. The SQL checks and manual source review below remain.
 
 1. Confirm tables/schema and evidence regeneration after B's input fix:
 
