@@ -59,6 +59,12 @@ def esc(s) -> str:
     return s
 
 
+def ext_url(u) -> str:
+    """Dataset URLs often lack a scheme; without one the browser treats them as paths on this app."""
+    u = str(u).strip()
+    return u if re.match(r"^https?://", u, re.I) else "https://" + u.lstrip("/")
+
+
 def road_label(c: dict) -> str:
     return "km by road (estimated)" if c.get("road_estimated") else "km by road"
 
@@ -203,7 +209,7 @@ def render_card(rank, c: dict, policy: dict, compact: bool = False, selected: bo
 
         contact = []
         if c.get("website"):
-            contact.append(f"[Website]({c['website']})")
+            contact.append(f"[Website]({ext_url(c['website'])})")
         if c.get("phone"):
             phone = esc(c["phone"])
             if c["phone_shared_by_n"] >= 3:
@@ -212,7 +218,7 @@ def render_card(rank, c: dict, policy: dict, compact: bool = False, selected: bo
         if contact:
             st.markdown(" · ".join(contact))
         if c["source_urls"]:
-            st.caption("Sources: " + " · ".join(f"[{i + 1}]({u})" for i, u in enumerate(c["source_urls"][:5])))
+            st.caption("Sources: " + " · ".join(f"[{i + 1}]({ext_url(u)})" for i, u in enumerate(c["source_urls"][:5])))
 
         if compact:
             st.caption(f"Score {c['score']:.3f} = evidence {parts['evidence_score']:.2f} × location "
