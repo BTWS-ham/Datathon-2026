@@ -1,0 +1,10 @@
+command: ["streamlit", "run", "app/app.py"]
+env:
+  # Injected from the app's SQL warehouse resource (resource key: sql-warehouse)
+  - name: DATABRICKS_WAREHOUSE_ID
+    valueFrom: sql-warehouse
+  # Model serving endpoint used for the AI review (add it as an app resource with "Can query")
+  - name: SERVING_ENDPOINT
+    value: "databricks-meta-llama-3-3-70b-instruct"
+  - name: STREAMLIT_BROWSER_GATHER_USAGE_STATS
+    value: "false"
