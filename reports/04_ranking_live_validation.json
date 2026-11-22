@@ -1,0 +1,58 @@
+{
+  "status": "failed",
+  "checked_at_utc": "2026-11-21T20:31:53.160586+00:00",
+  "code_commit": "db5dab586f606e28d455fbed4af827d134570e62",
+  "run_id": 354169071923172,
+  "run_state": {
+    "life_cycle_state": "INTERNAL_ERROR",
+    "result_state": "FAILED",
+    "state_message": "Task validate failed with message: Workload failed, see run output for details. This caused all downstream tasks to get skipped.",
+    "user_cancelled_or_timedout": false
+  },
+  "tasks": [
+    {
+      "task_key": "prepare",
+      "run_id": 74057512540733,
+      "state": {
+        "life_cycle_state": "TERMINATED",
+        "result_state": "SUCCESS",
+        "state_message": "",
+        "user_cancelled_or_timedout": false
+      },
+      "result": {
+        "created": [
+          "workspace.datathon.facilities_clean",
+          "workspace.datathon.facility_service_evidence"
+        ],
+        "facility_rows": 10088,
+        "evidence_rows": 9321,
+        "cleaner_commit": "b89a5f5ad20f1eae14a0039f3393b6375e7c9a20",
+        "service_commit": "6b4104bef87409e4fc000cc69a7e0e7905f7134b"
+      }
+    },
+    {
+      "task_key": "validate",
+      "run_id": 35274299299701,
+      "state": {
+        "life_cycle_state": "TERMINATED",
+        "result_state": "FAILED",
+        "state_message": "Workload failed, see run output for details",
+        "user_cancelled_or_timedout": false
+      },
+      "error": "ValueError: Duplicate facility_id 08344cdb-f455-4c22-8d31-a0a8e849124b; fix the upstream join",
+      "error_trace": "\u001b[0;31m---------------------------------------------------------------------------\u001b[0m\n\u001b[0;31mValueError\u001b[0m                                Traceback (most recent call last)\nFile \u001b[0;32m<command-7267612114817841>, line 8\u001b[0m\n\u001b[1;32m      5\u001b[0m \u001b[38;5;28;01mfrom\u001b[39;00m \u001b[38;5;21;01mranking\u001b[39;00m \u001b[38;5;28;01mimport\u001b[39;00m load_from_spark\n\u001b[1;32m      7\u001b[0m started \u001b[38;5;241m=\u001b[39m perf_counter()\n\u001b[0;32m----> 8\u001b[0m ranker \u001b[38;5;241m=\u001b[39m load_from_spark(spark)\n\u001b[1;32m      9\u001b[0m queries \u001b[38;5;241m=\u001b[39m json\u001b[38;5;241m.\u001b[39mloads(Path(\u001b[38;5;124m\"\u001b[39m\u001b[38;5;124mexamples/04_ranking_queries.json\u001b[39m\u001b[38;5;124m\"\u001b[39m)\u001b[38;5;241m.\u001b[39mread_text())\n\u001b[1;32m     10\u001b[0m summary \u001b[38;5;241m=\u001b[39m []\n\nFile \u001b[0;32m/Workspace/Users/weimings@andrew.cmu.edu/Datathon-2026/ranking.py:385\u001b[0m, in \u001b[0;36mload_from_spark\u001b[0;34m(spark, facility_table, evidence_table, max_rows)\u001b[0m\n\u001b[1;32m    383\u001b[0m \u001b[38;5;28;01mif\u001b[39;00m \u001b[38;5;28mlen\u001b[39m(frows) \u001b[38;5;241m>\u001b[39m max_rows \u001b[38;5;129;01mor\u001b[39;00m \u001b[38;5;28mlen\u001b[39m(erows) \u001b[38;5;241m>\u001b[39m max_rows:\n\u001b[1;32m    384\u001b[0m     \u001b[38;5;28;01mraise\u001b[39;00m \u001b[38;5;167;01mValueError\u001b[39;00m(\u001b[38;5;124m\"\u001b[39m\u001b[38;5;124mPrototype row limit exceeded; do not silently truncate ranking input\u001b[39m\u001b[38;5;124m\"\u001b[39m)\n\u001b[0;32m--> 385\u001b[0m \u001b[38;5;28;01mreturn\u001b[39;00m \u001b[43mRanker\u001b[49m\u001b[43m(\u001b[49m\u001b[43mfrows\u001b[49m\u001b[43m,\u001b[49m\u001b[43m \u001b[49m\u001b[43merows\u001b[49m\u001b[43m)\u001b[49m\n\nFile \u001b[0;32m/Workspace/Users/weimings@andrew.cmu.edu/Datathon-2026/ranking.py:149\u001b[0m, in \u001b[0;36mRanker.__init__\u001b[0;34m(self, facilities, evidence)\u001b[0m\n\u001b[1;32m    147\u001b[0m         \u001b[38;5;28;01mcontinue\u001b[39;00m\n\u001b[1;32m    148\u001b[0m     \u001b[38;5;28;01mif\u001b[39;00m uid \u001b[38;5;129;01min\u001b[39;00m \u001b[38;5;28mself\u001b[39m\u001b[38;5;241m.\u001b[39mfacilities:\n\u001b[0;32m--> 149\u001b[0m         \u001b[38;5;28;01mraise\u001b[39;00m \u001b[38;5;167;01mValueError\u001b[39;00m(\u001b[38;5;124mf\u001b[39m\u001b[38;5;124m\"\u001b[39m\u001b[38;5;124mDuplicate facility_id \u001b[39m\u001b[38;5;132;01m{\u001b[39;00muid\u001b[38;5;132;01m}\u001b[39;00m\u001b[38;5;124m; fix the upstream join\u001b[39m\u001b[38;5;124m\"\u001b[39m)\n\u001b[1;32m    150\u001b[0m     \u001b[38;5;28mself\u001b[39m\u001b[38;5;241m.\u001b[39mfacilities[uid] \u001b[38;5;241m=\u001b[39m row\n\u001b[1;32m    152\u001b[0m \u001b[38;5;28mself\u001b[39m\u001b[38;5;241m.\u001b[39mevidence \u001b[38;5;241m=\u001b[39m {}\n\n\u001b[0;31mValueError\u001b[0m: Duplicate facility_id 08344cdb-f455-4c22-8d31-a0a8e849124b; fix the upstream join"
+    },
+    {
+      "task_key": "validate",
+      "run_id": 431934696565306,
+      "state": {
+        "life_cycle_state": "TERMINATED",
+        "result_state": "FAILED",
+        "state_message": "Workload failed, see run output for details",
+        "user_cancelled_or_timedout": false
+      },
+      "error": "ValueError: Duplicate facility_id 08344cdb-f455-4c22-8d31-a0a8e849124b; fix the upstream join",
+      "error_trace": "\u001b[0;31m---------------------------------------------------------------------------\u001b[0m\n\u001b[0;31mValueError\u001b[0m                                Traceback (most recent call last)\nFile \u001b[0;32m<command-7267612114817841>, line 8\u001b[0m\n\u001b[1;32m      5\u001b[0m \u001b[38;5;28;01mfrom\u001b[39;00m \u001b[38;5;21;01mranking\u001b[39;00m \u001b[38;5;28;01mimport\u001b[39;00m load_from_spark\n\u001b[1;32m      7\u001b[0m started \u001b[38;5;241m=\u001b[39m perf_counter()\n\u001b[0;32m----> 8\u001b[0m ranker \u001b[38;5;241m=\u001b[39m load_from_spark(spark)\n\u001b[1;32m      9\u001b[0m queries \u001b[38;5;241m=\u001b[39m json\u001b[38;5;241m.\u001b[39mloads(Path(\u001b[38;5;124m\"\u001b[39m\u001b[38;5;124mexamples/04_ranking_queries.json\u001b[39m\u001b[38;5;124m\"\u001b[39m)\u001b[38;5;241m.\u001b[39mread_text())\n\u001b[1;32m     10\u001b[0m summary \u001b[38;5;241m=\u001b[39m []\n\nFile \u001b[0;32m/Workspace/Users/weimings@andrew.cmu.edu/Datathon-2026/ranking.py:385\u001b[0m, in \u001b[0;36mload_from_spark\u001b[0;34m(spark, facility_table, evidence_table, max_rows)\u001b[0m\n\u001b[1;32m    383\u001b[0m \u001b[38;5;28;01mif\u001b[39;00m \u001b[38;5;28mlen\u001b[39m(frows) \u001b[38;5;241m>\u001b[39m max_rows \u001b[38;5;129;01mor\u001b[39;00m \u001b[38;5;28mlen\u001b[39m(erows) \u001b[38;5;241m>\u001b[39m max_rows:\n\u001b[1;32m    384\u001b[0m     \u001b[38;5;28;01mraise\u001b[39;00m \u001b[38;5;167;01mValueError\u001b[39;00m(\u001b[38;5;124m\"\u001b[39m\u001b[38;5;124mPrototype row limit exceeded; do not silently truncate ranking input\u001b[39m\u001b[38;5;124m\"\u001b[39m)\n\u001b[0;32m--> 385\u001b[0m \u001b[38;5;28;01mreturn\u001b[39;00m \u001b[43mRanker\u001b[49m\u001b[43m(\u001b[49m\u001b[43mfrows\u001b[49m\u001b[43m,\u001b[49m\u001b[43m \u001b[49m\u001b[43merows\u001b[49m\u001b[43m)\u001b[49m\n\nFile \u001b[0;32m/Workspace/Users/weimings@andrew.cmu.edu/Datathon-2026/ranking.py:149\u001b[0m, in \u001b[0;36mRanker.__init__\u001b[0;34m(self, facilities, evidence)\u001b[0m\n\u001b[1;32m    147\u001b[0m         \u001b[38;5;28;01mcontinue\u001b[39;00m\n\u001b[1;32m    148\u001b[0m     \u001b[38;5;28;01mif\u001b[39;00m uid \u001b[38;5;129;01min\u001b[39;00m \u001b[38;5;28mself\u001b[39m\u001b[38;5;241m.\u001b[39mfacilities:\n\u001b[0;32m--> 149\u001b[0m         \u001b[38;5;28;01mraise\u001b[39;00m \u001b[38;5;167;01mValueError\u001b[39;00m(\u001b[38;5;124mf\u001b[39m\u001b[38;5;124m\"\u001b[39m\u001b[38;5;124mDuplicate facility_id \u001b[39m\u001b[38;5;132;01m{\u001b[39;00muid\u001b[38;5;132;01m}\u001b[39;00m\u001b[38;5;124m; fix the upstream join\u001b[39m\u001b[38;5;124m\"\u001b[39m)\n\u001b[1;32m    150\u001b[0m     \u001b[38;5;28mself\u001b[39m\u001b[38;5;241m.\u001b[39mfacilities[uid] \u001b[38;5;241m=\u001b[39m row\n\u001b[1;32m    152\u001b[0m \u001b[38;5;28mself\u001b[39m\u001b[38;5;241m.\u001b[39mevidence \u001b[38;5;241m=\u001b[39m {}\n\n\u001b[0;31mValueError\u001b[0m: Duplicate facility_id 08344cdb-f455-4c22-8d31-a0a8e849124b; fix the upstream join"
+    }
+  ]
+}

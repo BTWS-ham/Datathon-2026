@@ -1,0 +1,95 @@
+{
+  "red_flags": [
+    "no",
+    "not",
+    "without",
+    "unavailable",
+    "lack",
+    "lacks",
+    "lacking",
+    "out of service",
+    "nonfunctional",
+    "non-functional",
+    "not functional",
+    "planned",
+    "proposed",
+    "upcoming",
+    "discontinued",
+    "closed",
+    "referral",
+    "referred",
+    "refers",
+    "refer to",
+    "outsourced",
+    "off-site",
+    "offsite"
+  ],
+  "services": {
+    "hemodialysis": {
+      "direct": [
+        "hemodialysis",
+        "haemodialysis",
+        "maintenance hemodialysis",
+        "maintenance haemodialysis"
+      ],
+      "supporting": [
+        "dialysis machine",
+        "dialysis machines",
+        "hemodialysis machine",
+        "hemodialysis machines",
+        "haemodialysis machine",
+        "haemodialysis machines"
+      ],
+      "specialties": [
+        "nephrology"
+      ],
+      "red_flags": [
+        "peritoneal dialysis only",
+        "dialysis unit closed"
+      ]
+    },
+    "ct_scan": {
+      "direct": [
+        "CT scan",
+        "CT scans",
+        "CT scanning",
+        "computed tomography"
+      ],
+      "supporting": [
+        "CT scanner",
+        "CT scanners",
+        "computed tomography scanner",
+        "computed tomography scanners"
+      ],
+      "specialties": [
+        "radiology"
+      ],
+      "red_flags": [
+        "CT scanner down",
+        "CT scanner offline"
+      ]
+    },
+    "mri": {
+      "direct": [
+        "MRI",
+        "MRI scan",
+        "MRI scans",
+        "magnetic resonance imaging"
+      ],
+      "supporting": [
+        "MRI machine",
+        "MRI machines",
+        "MRI scanner",
+        "MRI scanners",
+        "magnetic resonance imaging scanner"
+      ],
+      "specialties": [
+        "radiology"
+      ],
+      "red_flags": [
+        "MRI scanner down",
+        "MRI scanner offline"
+      ]
+    }
+  }
+}
