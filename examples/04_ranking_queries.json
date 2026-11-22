@@ -1,13 +1,13 @@
 [
   {
     "location": "Patna",
-    "service": "hemodialysis",
+    "service": "dialysis",
     "latitude": 25.5941,
     "longitude": 85.1376
   },
   {
     "location": "Bihar rural test point",
-    "service": "hemodialysis",
+    "service": "dialysis",
     "latitude": 25.9,
     "longitude": 86.7
   },
@@ -49,13 +49,13 @@
   },
   {
     "location": "Nagpur",
-    "service": "hemodialysis",
+    "service": "dialysis",
     "latitude": 21.1458,
     "longitude": 79.0882
   },
   {
     "location": "Odisha rural test point",
-    "service": "hemodialysis",
+    "service": "dialysis",
     "latitude": 19.9,
     "longitude": 83.0
   }

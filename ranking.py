@@ -34,7 +34,13 @@ SOURCE_FIELDS = {
     "description", "procedure", "equipment", "capability", "specialties", "specialty",
     "procedure_list", "equipment_list", "capability_list", "specialties_list",
 }
-URGENT_SERVICES = {"emergency_c_section", "nicu", "trauma", "burn_care", "emergency", "icu"}
+URGENT_SERVICES = {
+    "c_section",
+    "emergency_trauma",
+    "nicu",
+    "icu",
+    "burn_care",
+}
 LEVELS = {"strong", "moderate", "weak"}
 
 

@@ -59,11 +59,11 @@ class RankingTests(unittest.TestCase):
     def test_urgent_distance_penalty_is_steeper(self):
         for row in list(self.evidence):
             urgent = copy.deepcopy(row)
-            urgent["service"] = "trauma"
+            urgent["service"] = "emergency_trauma"
             self.evidence.append(urgent)
         ranker = self.ranker()
         routine = ranker.recommend("dialysis", 25.5941, 85.1376)
-        urgent = ranker.recommend("trauma", 25.5941, 85.1376)
+        urgent = ranker.recommend("emergency_trauma", 25.5941, 85.1376)
         self.assertLess(urgent["nearest_strong_option"]["score"], routine["nearest_strong_option"]["score"])
         self.assertEqual(urgent["policy"]["nearby_km"], 30)
 
